@@ -37,9 +37,9 @@ temperature = st.sidebar.slider('temperature', min_value=0.01, max_value=5.0, va
 top_p = st.sidebar.slider('top_p', min_value=0.01, max_value=1.0, value=0.9, step=0.01)
 max_length = st.sidebar.slider('max_length', min_value=32, max_value=128, value=120, step=8)
 st.markdown('📖 Learn how to build this app in this [blog](https://blog.streamlit.io/how-to-build-a-llama-2-chatbot/)!')
-temperature = st.sidebar.slider('temperature', min_value=0.01, max_value=5.0, value=0.1, step=0.01)
-top_p = st.sidebar.slider('top_p', min_value=0.01, max_value=1.0, value=0.9, step=0.01)
-max_length = st.sidebar.slider('max_length', min_value=32, max_value=128, value=120, step=8)
+# temperature = st.sidebar.slider('temperature', min_value=0.01, max_value=5.0, value=0.1, step=0.01)
+# top_p = st.sidebar.slider('top_p', min_value=0.01, max_value=1.0, value=0.9, step=0.01)
+# max_length = st.sidebar.slider('max_length', min_value=32, max_value=128, value=120, step=8)
 
 # Store LLM generated responses
 if "messages" not in st.session_state.keys():
@@ -98,18 +98,24 @@ if prompt := st.chat_input(disabled=not replicate_api):
         st.write(prompt)
 
 # Generate a new response if last message is not from assistant
-if st.session_state.messages[-1]["role"] != "assistant":
-    with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
-            response = generate_llama2_response(prompt)
-            placeholder = st.empty()
-            full_response = ''
-            for item in response:
-                full_response += item
+if (selected_model == 'Llama2-7B') or (selected_model == 'Llama2-13B'):
+    if st.session_state.messages[-1]["role"] != "assistant":
+        with st.chat_message("assistant"):
+            with st.spinner("Thinking..."):
+                response = generate_llama2_response(prompt)
+                placeholder = st.empty()
+                full_response = ''
+                for item in response:
+                    full_response += item
+                    placeholder.markdown(full_response)
                 placeholder.markdown(full_response)
-            placeholder.markdown(full_response)
-    message = {"role": "assistant", "content": full_response}
-    st.session_state.messages.append(message)
+        message = {"role": "assistant", "content": full_response}
+        st.session_state.messages.append(message)
 
-
-    
+elif selected_model == "stability-ai/stable-diffusion":
+    if st.session_state.messages[-1]["role"] != "assistant":
+        with st.chat_message("assistant"):
+            with st.spinner("Drawing..."):
+                response = generate_diff_response(prompt)
+        message = {"role": "assistant", "content": response}
+        st.session_state.messages.append(message)
