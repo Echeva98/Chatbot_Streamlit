@@ -12,7 +12,7 @@ st.set_page_config(page_title="🦙💬 Llama 2 Chatbot")
 
 # Replicate Credentials
 with st.sidebar:
-    st.title('🦙💬 Llama 2 Chatbot and Stable Diffusion')
+    st.title('🦙💬 Llama 2 Chatbot and Stable Diffusionnn')
     if 'REPLICATE_API_TOKEN' in st.secrets:
         st.success('API key already provided!', icon='✅')
         replicate_api = st.secrets['REPLICATE_API_TOKEN']
@@ -68,15 +68,9 @@ def generate_llama2_response(prompt_input):
     return output
 
 def generate_diff_response(prompt_input):
-    string_dialogue = "You are a helpful assistant. You do not respond as 'User' or pretend to be 'User'. You only respond once as 'Assistant'."
-    for dict_message in st.session_state.messages:
-        if dict_message["role"] == "user":
-            string_dialogue += "User: " + dict_message["content"] + "\n\n"
-        else:
-            string_dialogue += "Assistant: " + dict_message["content"] + "\n\n"
     
     output = replicate.run('stability-ai/stable-diffusion:ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4', 
-                           input={"prompt": f"{string_dialogue} {prompt_input} Assistant: ",
+                           input={"prompt": f"{prompt_input} ",
                                 "width": 768,
                                 "height": 768,
                                 "prompt": "an astronaut riding a horse on mars, hd, dramatic lighting",
